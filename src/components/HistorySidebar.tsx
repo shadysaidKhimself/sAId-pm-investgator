@@ -9,7 +9,7 @@ interface HistorySidebarProps {
 }
 
 export function HistorySidebar({ onClose }: HistorySidebarProps) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
   const [sessions, setSessions] = useState<Session[]>(() => getSessions());
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
