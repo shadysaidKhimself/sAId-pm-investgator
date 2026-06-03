@@ -174,12 +174,6 @@ export function useChat(initialSessionId?: string | null) {
           setChecklistProgress((prev) => [...new Set([...prev, ...newItems])]);
         }
 
-        // Detect interview end and strip internal tokens
-        console.log('[DEBUG] hasInterviewComplete:', fullText.includes('[INTERVIEW_COMPLETE]'));
-        console.log('[DEBUG] hasInternalDocStart:', fullText.includes('[INTERNAL_DOC_START]'));
-        console.log('[DEBUG] hasInternalDocEnd:', fullText.includes('[INTERNAL_DOC_END]'));
-        console.log('[DEBUG] hasExternalDocStart:', fullText.includes('[EXTERNAL_DOC_START]'));
-        console.log('[DEBUG] hasExternalDocEnd:', fullText.includes('[EXTERNAL_DOC_END]'));
         const { isComplete, internalDoc, externalDoc, cleanText } = detectInterviewEnd(fullText);
 
         const finalSession: Session = {
@@ -198,7 +192,7 @@ export function useChat(initialSessionId?: string | null) {
         }
       } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError') return;
-        console.error('Chat error:', error);
+        console.error('[Chat error]', error instanceof Error ? error.message : error);
         setSession((prev) => {
           const msgs = [...prev.messages];
           const last = msgs[msgs.length - 1];
