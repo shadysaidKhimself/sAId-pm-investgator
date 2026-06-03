@@ -67,21 +67,25 @@ export function useChat(initialSessionId?: string | null) {
     setSaveStatus('saving');
     try {
       const date = new Date().toISOString().split('T')[0];
+      const postDoc = async (type: 'internal' | 'external', content: string) => {
+        const res = await fetch('/api/save-doc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content, sessionId, date, type }),
+        });
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(`save-doc [${type}] ${res.status}: ${body.error ?? body.message ?? 'unknown'}`);
+        }
+      };
       const saves = [
-        internalDoc && fetch('/api/save-doc', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: internalDoc, sessionId, date, type: 'internal' }),
-        }),
-        externalDoc && fetch('/api/save-doc', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: externalDoc, sessionId, date, type: 'external' }),
-        }),
-      ].filter(Boolean) as Promise<Response>[];
+        internalDoc ? postDoc('internal', internalDoc) : null,
+        externalDoc ? postDoc('external', externalDoc) : null,
+      ].filter(Boolean) as Promise<void>[];
       await Promise.all(saves);
       setSaveStatus('success');
-    } catch {
+    } catch (err) {
+      console.error('saveDoc failed:', err);
       setSaveStatus('error');
     }
   }, []);
