@@ -175,6 +175,11 @@ export function useChat(initialSessionId?: string | null) {
         }
 
         // Detect interview end and strip internal tokens
+        console.log('[DEBUG] hasInterviewComplete:', fullText.includes('[INTERVIEW_COMPLETE]'));
+        console.log('[DEBUG] hasInternalDocStart:', fullText.includes('[INTERNAL_DOC_START]'));
+        console.log('[DEBUG] hasInternalDocEnd:', fullText.includes('[INTERNAL_DOC_END]'));
+        console.log('[DEBUG] hasExternalDocStart:', fullText.includes('[EXTERNAL_DOC_START]'));
+        console.log('[DEBUG] hasExternalDocEnd:', fullText.includes('[EXTERNAL_DOC_END]'));
         const { isComplete, internalDoc, externalDoc, cleanText } = detectInterviewEnd(fullText);
 
         const finalSession: Session = {
