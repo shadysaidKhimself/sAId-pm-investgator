@@ -1,6 +1,5 @@
 {
   "functions": {
-    "api/chat.ts": { "maxDuration": 60 },
     "api/save-doc.ts": { "maxDuration": 30 }
   }
 }

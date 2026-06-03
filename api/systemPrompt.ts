@@ -325,12 +325,12 @@ Checklist mapping:
 When the interview is fully complete and you have displayed the external client-facing summary document in the chat, append the following block on a new line. This block is stripped by the frontend before rendering — the client will never see it.
 
 [INTERVIEW_COMPLETE]
-[INTERNAL_DOC_START]
-{內部版 PM 分析文件的完整純文字內容，包含痛點摘要、解決方案建議、PRD 草稿}
-[INTERNAL_DOC_END]
 [EXTERNAL_DOC_START]
 {外部版需求確認文件的完整純文字內容，與剛才顯示在對話中的版本相同}
 [EXTERNAL_DOC_END]
+[INTERNAL_DOC_START]
+{內部版 PM 分析文件的完整純文字內容，包含痛點摘要、解決方案建議、PRD 草稿}
+[INTERNAL_DOC_END]
 
 CRITICAL RULES:
 - [EXTERNAL_DOC_START]...[EXTERNAL_DOC_END] 是外部版文件的存檔副本，內容與對話中顯示的相同，供前端自動存進客戶資料夾
