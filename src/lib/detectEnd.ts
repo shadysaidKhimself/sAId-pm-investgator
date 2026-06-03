@@ -1,56 +1,45 @@
 export function detectInterviewEnd(text: string): {
   isComplete: boolean;
+  externalDoc: string | null;
   internalDoc: string | null;
   cleanText: string;
 } {
   const isComplete = text.includes('[INTERVIEW_COMPLETE]');
-  if (!isComplete) return { isComplete: false, internalDoc: null, cleanText: text };
 
-  const docMatch = text.match(/\[INTERNAL_DOC_START\]([\s\S]*?)\[INTERNAL_DOC_END\]/);
-  const rawDoc = docMatch ? docMatch[1].trim() : null;
+  const externalMatch = text.match(/\[EXTERNAL_DOC_START\]([\s\S]*?)\[EXTERNAL_DOC_END\]/);
+  const internalMatch = text.match(/\[INTERNAL_DOC_START\]([\s\S]*?)\[INTERNAL_DOC_END\]/);
 
-  let internalDoc: string | null = null;
-  if (rawDoc) {
-    try {
-      const parsed = JSON.parse(rawDoc);
-      internalDoc = typeof parsed.internalDocument === 'string'
-        ? parsed.internalDocument
-        : JSON.stringify(parsed, null, 2);
-    } catch {
-      internalDoc = rawDoc;
-    }
-  }
+  const externalDoc = externalMatch ? externalMatch[1].trim() : null;
+  const internalDoc = internalMatch ? internalMatch[1].trim() : null;
 
-  const cleanText = text
-    .replace('[INTERVIEW_COMPLETE]', '')
-    .replace(/\[INTERNAL_DOC_START\][\s\S]*?\[INTERNAL_DOC_END\]/, '')
+  // Always strip all signal blocks and tags from visible text
+  const base = isComplete ? text.split('[INTERVIEW_COMPLETE]')[0] : text;
+  const cleanText = base
+    .replace(/\[EXTERNAL_DOC_START\][\s\S]*?\[EXTERNAL_DOC_END\]/g, '')
+    .replace(/\[INTERNAL_DOC_START\][\s\S]*?\[INTERNAL_DOC_END\]/g, '')
     .replace(/\[CHECKLIST:\d+\]/g, '')
     .trim();
 
-  return { isComplete: true, internalDoc, cleanText };
+  return { isComplete, externalDoc, internalDoc, cleanText };
 }
 
 export function extractChecklistUpdates(text: string): number[] {
   const matches = [...text.matchAll(/\[CHECKLIST:(\d+)\]/g)];
-  return matches.map((m) => parseInt(m[1], 10));
-}
-
-export function stripInternalContent(text: string): string {
-  return text
-    .replace('[INTERVIEW_COMPLETE]', '')
-    .replace(/\[INTERNAL_DOC_START\][\s\S]*?\[INTERNAL_DOC_END\]/, '')
-    .replace(/\[CHECKLIST:\d+\]/g, '')
-    .trim();
+  return matches.map(m => parseInt(m[1]));
 }
 
 export function stripForDisplay(text: string): string {
-  let cleaned = text.replace(/\[CHECKLIST:\d+\]/g, '');
-  cleaned = cleaned.replace(/\[INTERVIEW_COMPLETE\]/g, '');
-  // Hide internal doc block even if it's currently streaming (incomplete)
-  cleaned = cleaned.replace(/\[INTERNAL_DOC_START\][\s\S]*?(?:\[INTERNAL_DOC_END\]|$)/, '');
-  // Hide internal indicators
-  cleaned = cleaned.replace(/\(?BDD scenarios start being collected\)?/gi, '');
-  cleaned = cleaned.replace(/\(?More roles identified\)?/gi, '');
-  cleaned = cleaned.replace(/\(?All checklist items now covered, including decision goals and BDD scenarios\)?/gi, '');
-  return cleaned;
+  // Strip complete blocks first
+  let result = text
+    .replace(/\[EXTERNAL_DOC_START\][\s\S]*?\[EXTERNAL_DOC_END\]/g, '')
+    .replace(/\[INTERNAL_DOC_START\][\s\S]*?\[INTERNAL_DOC_END\]/g, '')
+    .replace(/\[CHECKLIST:\d+\]/g, '');
+
+  // Truncate at any incomplete signal block still streaming in
+  result = result
+    .split('[INTERVIEW_COMPLETE]')[0]
+    .split('[EXTERNAL_DOC_START]')[0]
+    .split('[INTERNAL_DOC_START]')[0];
+
+  return result.trim();
 }

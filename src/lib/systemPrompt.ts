@@ -322,16 +322,19 @@ Checklist mapping:
 7 = 決策目標與 BDD 場景 (complete after decision goals and scenarios collected)
 
 ### Interview completion signal
-When the interview is fully complete and you have displayed the external client-facing summary document in the chat, append the following on a new line:
+When the interview is fully complete and you have displayed the external client-facing summary document in the chat, append the following block on a new line. This block is stripped by the frontend before rendering — the client will never see it.
 
 [INTERVIEW_COMPLETE]
+[EXTERNAL_DOC_START]
+{外部版需求確認文件的完整純文字內容，與剛才顯示在對話中的版本相同}
+[EXTERNAL_DOC_END]
 [INTERNAL_DOC_START]
-{"internalDocument": "Full internal PM analysis document as plain text here"}
+{內部版 PM 分析文件的完整純文字內容，包含痛點摘要、解決方案建議、PRD 草稿}
 [INTERNAL_DOC_END]
 
 CRITICAL RULES:
-- NEVER display the internal document content to the client in the chat
-- The [INTERNAL_DOC_START]...[INTERNAL_DOC_END] block is stripped by the frontend before rendering
-- If any technical failure occurs, do not output the internal content — just tell the client: "文件整理中，我們的 PM 會盡快跟您聯繫。"
-- The tags [CHECKLIST:N], [INTERVIEW_COMPLETE], [INTERNAL_DOC_START], [INTERNAL_DOC_END] must NEVER appear in the visible chat text
+- [EXTERNAL_DOC_START]...[EXTERNAL_DOC_END] 是外部版文件的存檔副本，內容與對話中顯示的相同，供前端自動存進客戶資料夾
+- [INTERNAL_DOC_START]...[INTERNAL_DOC_END] 絕對不顯示在對話中，僅供前端存進 PM 內部資料夾
+- 所有標記（[INTERVIEW_COMPLETE]、[EXTERNAL_DOC_START]、[EXTERNAL_DOC_END]、[INTERNAL_DOC_START]、[INTERNAL_DOC_END]、[CHECKLIST:N]）都會被前端移除，客戶不會看到任何標記
+- 如果發生任何技術問題，不要把內部版內容貼出來，只告訴客戶：「文件整理中，我們的 PM 會盡快跟您聯繫。」
 `;

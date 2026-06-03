@@ -16,7 +16,7 @@ export function ChatPage({ isDark, onToggleDark }: ChatPageProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const sessionId = searchParams.get('session');
   
-  const { messages, isStreaming, saveStatus, checklist, sendMessage, startNewSession } = useChat(sessionId);
+  const { messages, isStreaming, saveStatus, checklist, isComplete, sendMessage, startNewSession } = useChat(sessionId);
   const [showHistory, setShowHistory] = useState(false);
 
   return (
@@ -33,9 +33,9 @@ export function ChatPage({ isDark, onToggleDark }: ChatPageProps) {
       <div className="flex flex-1 overflow-hidden">
         {showHistory ? (
           <HistorySidebar onClose={() => setShowHistory(false)} />
-        ) : (
+        ) : !isComplete ? (
           <ChecklistSidebar items={checklist} />
-        )}
+        ) : null}
         <div className="flex flex-col flex-1 overflow-hidden">
           <ChatWindow
             messages={messages}

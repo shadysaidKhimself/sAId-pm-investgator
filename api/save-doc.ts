@@ -10,7 +10,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const { content, sessionId, date } = req.body;
+    const { content, sessionId, date, type, clientName } = req.body;
+    // type: 'internal' | 'external'
 
     if (!content || !date) {
       return res.status(400).json({ error: 'content and date are required' });
@@ -28,15 +29,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const drive = google.drive({ version: 'v3', auth: oauth2Client });
 
     const shortId = sessionId ? String(sessionId).slice(0, 8) : 'unknown';
-    const fileName = `訪談紀錄_${date}_${shortId}`;
+    const client = clientName || shortId;
+
+    const folderId = type === 'external'
+      ? process.env.GOOGLE_DRIVE_EXTERNAL_FOLDER_ID
+      : process.env.GOOGLE_DRIVE_FOLDER_ID;
+
+    const fileName = type === 'external'
+      ? `${client}_需求確認_${date}`
+      : `${client}_訪談紀錄_${date}`;
+
+    if (!folderId) {
+      return res.status(500).json({ error: `Missing folder ID for type: ${type}` });
+    }
 
     const file = await drive.files.create({
       requestBody: {
         name: fileName,
         mimeType: 'application/vnd.google-apps.document',
-        parents: process.env.GOOGLE_DRIVE_FOLDER_ID
-          ? [process.env.GOOGLE_DRIVE_FOLDER_ID]
-          : undefined,
+        parents: [folderId],
       },
       media: {
         mimeType: 'text/plain',

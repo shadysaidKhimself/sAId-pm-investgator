@@ -59,16 +59,27 @@ export function useChat(initialSessionId?: string | null) {
   const checklist = buildChecklist(checklistProgress);
   const messages = session.messages;
 
-  const saveDoc = useCallback(async (internalDoc: string, sessionId: string) => {
+  const saveDoc = useCallback(async (
+    internalDoc: string | null,
+    externalDoc: string | null,
+    sessionId: string,
+  ) => {
     setSaveStatus('saving');
     try {
       const date = new Date().toISOString().split('T')[0];
-      const res = await fetch('/api/save-doc', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: internalDoc, sessionId, date }),
-      });
-      if (!res.ok) throw new Error('Save failed');
+      const saves = [
+        internalDoc && fetch('/api/save-doc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: internalDoc, sessionId, date, type: 'internal' }),
+        }),
+        externalDoc && fetch('/api/save-doc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: externalDoc, sessionId, date, type: 'external' }),
+        }),
+      ].filter(Boolean) as Promise<Response>[];
+      await Promise.all(saves);
       setSaveStatus('success');
     } catch {
       setSaveStatus('error');
@@ -160,7 +171,7 @@ export function useChat(initialSessionId?: string | null) {
         }
 
         // Detect interview end and strip internal tokens
-        const { isComplete, internalDoc, cleanText } = detectInterviewEnd(fullText);
+        const { isComplete, internalDoc, externalDoc, cleanText } = detectInterviewEnd(fullText);
 
         const finalSession: Session = {
           ...sessionWithUser,
@@ -173,8 +184,8 @@ export function useChat(initialSessionId?: string | null) {
         setSession(finalSession);
         saveSession(finalSession);
 
-        if (isComplete && internalDoc) {
-          await saveDoc(internalDoc, sessionWithUser.id);
+        if (isComplete && (internalDoc || externalDoc)) {
+          await saveDoc(internalDoc, externalDoc, sessionWithUser.id);
         }
       } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError') return;
@@ -206,5 +217,5 @@ export function useChat(initialSessionId?: string | null) {
     setSession(fresh);
   }, []);
 
-  return { session, messages, isStreaming, saveStatus, checklist, sendMessage, stopStreaming, startNewSession };
+  return { session, messages, isStreaming, saveStatus, checklist, isComplete: session.isComplete, sendMessage, stopStreaming, startNewSession };
 }
