@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Anthropic from '@anthropic-ai/sdk';
-import { SYSTEM_PROMPT } from '../src/lib/systemPrompt';
+import { SYSTEM_PROMPT } from './systemPrompt';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
