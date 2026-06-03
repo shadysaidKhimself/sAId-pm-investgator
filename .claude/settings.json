@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\(JSON.stringify\\(Object.keys\\({...p.dependencies,...p.devDependencies}\\), null, 2\\)\\)\")",
+      "Bash(npx tsc *)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(npx vite *)",
+      "Bash(Test-Path \"E:\\\\dev-data\\\\antigravity\\\\playground\\\\AI-me-investgator\\\\.env\")",
+      "Bash(node -e \"require\\('@anthropic-ai/sdk'\\)\")",
+      "Bash(npx vercel *)",
+      "Bash(node -e \"const {Anthropic} = require\\('@anthropic-ai/sdk'\\); console.log\\('OK'\\); const a = new Anthropic\\({apiKey:'test'}\\); console.log\\('stream:', typeof a.messages.stream\\);\")",
+      "Bash(git -C \"E:\\\\dev-data\\\\antigravity\\\\playground\\\\AI-me-investgator\" status)",
+      "Bash(git -C \"E:\\\\dev-data\\\\antigravity\\\\playground\\\\AI-me-investgator\" remote -v)"
+    ]
+  }
+}

@@ -1,0 +1,304 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+@custom-variant dark (&:is(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --color-brand-50: oklch(0.97 0.01 42);
+  --color-brand-100: oklch(0.94 0.04 42);
+  --color-brand-200: oklch(0.88 0.08 42);
+  --color-brand-300: oklch(0.79 0.13 42);
+  --color-brand-400: oklch(0.70 0.17 40);
+  --color-brand-500: oklch(0.60 0.18 38);
+  --color-brand-600: oklch(0.52 0.16 35);
+  --color-brand-700: oklch(0.44 0.14 32);
+
+  --color-surface-50: oklch(0.985 0.002 260);
+  --color-surface-100: oklch(0.96 0.004 260);
+  --color-surface-200: oklch(0.92 0.006 260);
+  --color-surface-300: oklch(0.87 0.008 260);
+  --color-surface-700: oklch(0.37 0.015 260);
+  --color-surface-800: oklch(0.25 0.015 260);
+  --color-surface-900: oklch(0.18 0.015 260);
+  --color-surface-950: oklch(0.13 0.015 260);
+}
+
+/* ---- Base Styles ---- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: #FAFAF9;
+  color: var(--color-surface-900);
+  min-height: 100vh;
+}
+
+::selection {
+  background-color: var(--color-brand-200);
+  color: var(--color-brand-700);
+}
+
+/* ---- Custom Scrollbar ---- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-300);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-300);
+}
+
+/* ---- Animations ---- */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes pulse-dot {
+  0%, 80%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out both;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.35s ease-out both;
+}
+
+.animate-slide-up-out {
+  animation: slide-up-out 0.35s ease-in both;
+}
+
+/* ---- Typing Indicator ---- */
+.typing-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-brand-400);
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* ---- Glassmorphism Utility ---- */
+.glass {
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* ---- Markdown Content Styling ---- */
+.markdown-content p {
+  margin: 0.5em 0;
+  line-height: 1.7;
+}
+
+.markdown-content p:first-child {
+  margin-top: 0;
+}
+
+.markdown-content p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.markdown-content li {
+  margin: 0.25em 0;
+  line-height: 1.6;
+}
+
+.markdown-content code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--color-surface-200);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+.markdown-content pre {
+  background: var(--color-surface-900);
+  color: var(--color-surface-100);
+  padding: 1em;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 0.75em 0;
+}
+
+.markdown-content pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid var(--color-brand-400);
+  margin: 0.75em 0;
+  padding: 0.5em 1em;
+  background: var(--color-brand-50);
+  border-radius: 0 6px 6px 0;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  margin: 1em 0 0.5em;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.markdown-content h1 { font-size: 1.25em; }
+.markdown-content h2 { font-size: 1.125em; }
+.markdown-content h3 { font-size: 1em; }
+
+.markdown-content strong {
+  font-weight: 600;
+}
+
+.markdown-content a {
+  color: var(--color-brand-600);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.markdown-content a:hover {
+  color: var(--color-brand-700);
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid var(--color-surface-200);
+  margin: 1em 0;
+}
+
+/* ---- Dark Mode Overrides ---- */
+.dark .markdown-content code {
+  background: var(--color-surface-800);
+  color: var(--color-surface-100);
+}
+
+.dark .markdown-content pre {
+  background: var(--color-surface-950);
+}
+
+.dark .markdown-content blockquote {
+  background: oklch(0.18 0.02 42);
+  border-left-color: var(--color-brand-400);
+}
+
+.dark .markdown-content th {
+  background: var(--color-surface-800);
+}
+
+.dark .markdown-content th,
+.dark .markdown-content td {
+  border-color: var(--color-surface-700);
+}
+
+.dark .markdown-content hr {
+  border-color: var(--color-surface-700);
+}
+
+.dark .markdown-content a {
+  color: var(--color-brand-400);
+}
+
+.dark .markdown-content a:hover {
+  color: var(--color-brand-300);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-surface-700);
+}
+
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.75em 0;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid var(--color-surface-200);
+  padding: 0.5em 0.75em;
+  text-align: left;
+}
+
+.markdown-content th {
+  background: var(--color-surface-100);
+  font-weight: 600;
+}
+
