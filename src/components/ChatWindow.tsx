@@ -31,7 +31,9 @@ export function ChatWindow({ messages, isStreaming, saveStatus }: ChatWindowProp
 
   return (
     <div className="flex-1 overflow-hidden flex flex-col bg-white dark:bg-gray-900">
-      {saveStatus !== 'idle' && <StatusBanner status={saveStatus} />}
+      {isStreaming && saveStatus === 'idle'
+        ? <StatusBanner status="streaming" />
+        : saveStatus !== 'idle' && <StatusBanner status={saveStatus} />}
 
       <div
         ref={scrollAreaRef}

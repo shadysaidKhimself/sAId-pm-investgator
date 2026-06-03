@@ -1,7 +1,7 @@
 ﻿import { useEffect, useState } from 'react';
 
 interface StatusBannerProps {
-  status: 'saving' | 'success' | 'error';
+  status: 'streaming' | 'saving' | 'success' | 'error';
 }
 
 export function StatusBanner({ status }: StatusBannerProps) {
@@ -21,6 +21,18 @@ export function StatusBanner({ status }: StatusBannerProps) {
   if (!isVisible) return null;
 
   const config = {
+    streaming: {
+      bg: 'from-blue-50 to-indigo-50 border-blue-200',
+      icon: (
+        <div className="flex items-center gap-1">
+          <span className="typing-dot" />
+          <span className="typing-dot" />
+          <span className="typing-dot" />
+        </div>
+      ),
+      text: 'sAI\'d 正在整理需求，請稍候...',
+      textColor: 'text-blue-800',
+    },
     saving: {
       bg: 'from-amber-50 to-orange-50 border-amber-200',
       icon: (
